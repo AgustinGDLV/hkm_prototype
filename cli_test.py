@@ -1,6 +1,5 @@
 import random
 
-# TODO: convert from globals to class
 class Game:
     def __init__(self, time=30):
         # TODO: Assign pin IDs
