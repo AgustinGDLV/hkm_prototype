@@ -1,0 +1,27 @@
+# This file contains debug declarations for running the
+# game while not using the Pi.
+
+class LED:
+    def __init__(self, pin):
+        self.pin = pin
+    
+    def on(self):
+        if __debug__: print(" # LED pin %d on!" % self.pin)
+        
+    def off(self):
+        if __debug__: print(" # LED pin %d off!" % self.pin)
+
+class Button:
+    def __init__(self, pin):
+        self.pin = pin
+        self.is_pressed = False
+
+class TM1637:
+    def __init__(self, clk, dio):
+        self.clk = clk
+        self.dio = dio
+        self.time = 0
+    
+    def numbers(self, num1, num2, colon):
+        if __debug__ and num2 != self.time: print(" # Clock: %d" % num2)
+        self.time = num2
