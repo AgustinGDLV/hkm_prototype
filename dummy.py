@@ -13,7 +13,10 @@ class LED:
 
 class Button:
     def __init__(self, pin):
-        self.pin = pin
+        class Pin:
+            def __init__(self, num):
+                self.number = num
+        self.pin = Pin(pin)
         self.is_pressed = False
 
 class TM1637:

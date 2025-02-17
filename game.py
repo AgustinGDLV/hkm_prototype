@@ -52,7 +52,6 @@ class Game:
 
         # Misc. variables
         self.score = 0
-        self.time_limit = time # in seconds
         self.current_color = "blue"
         self.last_input = "R"
 
