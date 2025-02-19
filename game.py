@@ -15,13 +15,13 @@ except Exception as e:
     print("Failed to import library: " + str(e))
 
 # Change these constants to modify pins.
-PIN_LED_R = 17
-PIN_LED_G = 27
-PIN_LED_B = 22
+PIN_LED_R = 16
+PIN_LED_G = 25
+PIN_LED_B = 24
 
-PIN_BUTTON_P1_R = 23
-PIN_BUTTON_P1_G = 24
-PIN_BUTTON_P2_R = 25
+PIN_BUTTON_P1_R = 15
+PIN_BUTTON_P1_G = 23
+PIN_BUTTON_P2_R = 14
 PIN_BUTTON_P2_G = 26
 
 PIN_TIMER_1_CLK = 17
@@ -92,8 +92,11 @@ class Game:
         if not RASPBERRY_PI:
             self.last_input = input("Is it ripe?\n") == "T" # True / False
         else:
-            while (not self.user1_green_button.is_pressed) or (not self.user1_red_button.is_pressed):
-                pass
+            while True:
+                if self.user1_green_button.is_pressed:
+                    break
+                if self.user1_red_button.is_pressed:
+                    break
             self.last_input = self.user1_green_button.is_pressed
             
     def check_input(self, input, color):
@@ -111,12 +114,13 @@ class Game:
                 self.display_color()
                 self.wait_for_input()
                 if self.check_input(self.last_input, self.current_color):
-                    if not RASPBERRY_PI: print("You got it!")
+                    if __debug__: print("You got it!")
                     self.score += 1
-                elif not RASPBERRY_PI:
+                elif __debug__:
                     print("*buzzer*")
-                if not RASPBERRY_PI:
+                if  __debug__:
                     print("Score: %s\n" % self.score)
+                time.sleep(0.5)
 
             # Exit gracefully if interrupted.
             except KeyboardInterrupt:
@@ -125,6 +129,7 @@ class Game:
                 sys.exit()
 
         print("Time's up!")
+        print("Score: %d" % self.score)
 
 if __name__=="__main__":
     game = Game()
