@@ -39,6 +39,9 @@ class Clock:
             print(" # Clock stopped!")
             self.is_active = False
             self.thread = None
+            self.tm1.write([0,0,0,0])
+            if self.tm2 is not None:
+                self.tm2.write([0,0,0,0])
     
     def get_time(self):
         return self.time_out - time.time()
