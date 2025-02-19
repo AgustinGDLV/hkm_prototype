@@ -19,10 +19,8 @@ PIN_LED_R = 16
 PIN_LED_G = 25
 PIN_LED_B = 24
 
-PIN_BUTTON_P1_R = 15
-PIN_BUTTON_P1_G = 23
-PIN_BUTTON_P2_R = 14
-PIN_BUTTON_P2_G = 26
+PIN_BUTTON_R = 15
+PIN_BUTTON_G = 23
 
 PIN_TIMER_1_CLK = 17
 PIN_TIMER_1_DIO = 18
@@ -34,7 +32,7 @@ COLOR_RIPENESS = 0
 COLOR_RGB = 1
 
 class Game:
-    def __init__(self, time=30):
+    def __init__(self, duration=30):
         # LED assignment
         self.r = LED(PIN_LED_R)
         self.g = LED(PIN_LED_G)
@@ -42,14 +40,12 @@ class Game:
         self.led = (self.r, self.g, self.b)
 
         # Button assignment
-        self.user1_red_button = Button(PIN_BUTTON_P1_R)
-        self.user1_green_button = Button(PIN_BUTTON_P1_G)
-        self.user2_red_button = Button(PIN_BUTTON_P2_R)
-        self.user2_green_button = Button(PIN_BUTTON_P2_G)
+        self.red_button = Button(PIN_BUTTON_R)
+        self.green_button = Button(PIN_BUTTON_G)
 
         # Clock assignment
         self.tm1 = TM1637(clk=PIN_TIMER_1_CLK, dio=PIN_TIMER_1_DIO)
-        self.clock = Clock(time, self.tm1)
+        self.clock = Clock(duration, self.tm1)
 
         # Misc. variables
         self.score = 0
@@ -93,11 +89,11 @@ class Game:
             self.last_input = input("Is it ripe?\n") == "T" # True / False
         else:
             while True:
-                if self.user1_green_button.is_pressed:
+                if self.green_button.is_pressed:
                     break
-                if self.user1_red_button.is_pressed:
+                if self.red_button.is_pressed:
                     break
-            self.last_input = self.user1_green_button.is_pressed
+            self.last_input = self.green_button.is_pressed
             
     def check_input(self, input, color):
         ripe = self.colors[color][COLOR_RIPENESS]

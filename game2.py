@@ -15,13 +15,13 @@ except Exception as e:
     print("Failed to import library: " + str(e))
 
 # Change these constants to modify pins.
-PIN_LED_R = 17
-PIN_LED_G = 27
-PIN_LED_B = 22
+PIN_LED_R = 16
+PIN_LED_G = 25
+PIN_LED_B = 24
 
-PIN_BUTTON_P1_R = 23
-PIN_BUTTON_P1_G = 24
-PIN_BUTTON_P2_R = 25
+PIN_BUTTON_P1_R = 15
+PIN_BUTTON_P1_G = 23
+PIN_BUTTON_P2_R = 14
 PIN_BUTTON_P2_G = 26
 
 PIN_TIMER_1_CLK = 17
@@ -69,7 +69,7 @@ button_to_color = {
 }
 
 class Game:
-    def __init__(self, time=30):
+    def __init__(self, duration=30):
         # LED assignment
         self.r = LED(PIN_LED_R)
         self.g = LED(PIN_LED_G)
@@ -88,17 +88,17 @@ class Game:
         def pressed(button):
             pin = button.pin.number
             if self.first_press[button_to_player[pin]] == 0:
-                self.first_press[button_to_player[pin]] = time.time_ns()
+                self.first_press[button_to_player[pin]] = float(time.time())
                 self.input_pressed[button_to_player[pin]] = button_to_color[pin]
-        
-        self.red_button_1.pressed = pressed
-        self.green_button_2.pressed = pressed
-        self.red_button_1.pressed = pressed
-        self.green_button_2.pressed = pressed
+
+        self.red_button_1.when_pressed = pressed
+        self.green_button_1.when_pressed = pressed
+        self.red_button_2.when_pressed = pressed
+        self.green_button_2.when_pressed = pressed
 
         # Clock assignment
         self.tm1 = TM1637(clk=PIN_TIMER_1_CLK, dio=PIN_TIMER_1_DIO)
-        self.clock = Clock(time, self.tm1)
+        self.clock = Clock(duration, self.tm1)
 
         # Misc. variables
         self.state = STATE_START
@@ -161,13 +161,16 @@ class Game:
                         self.state = STATE_END
                         self.clock.stop()
                         print("Time's up!")
+                        print("Score: " + str(self.scores))
 
                 elif self.state == STATE_CHECK_INPUT:
                     first_player = self.get_fastest_player()
-                    if check_input(self.input_pressed[first_player], self.current_color):
-                        scores[first_player] += 1
-                    elif check_input(self.input_pressed[first_player ^ 1], self.current_color):
-                        scores[first_player ^ 1] += 1
+                    time.sleep(0.1) # give 100ms for other player to press
+                    if self.check_input(self.input_pressed[first_player], self.current_color):
+                        self.scores[first_player] += 1
+                    elif self.check_input(self.input_pressed[first_player ^ 1], self.current_color) and self.first_press[first_player ^ 1] > 0:
+                        self.scores[first_player ^ 1] += 1
+                    self.state = STATE_RESET_INPUTS
 
                 if self.state == STATE_RESET_INPUTS:
                     self.first_press = [0, 0]
@@ -185,6 +188,10 @@ class Game:
         except KeyboardInterrupt:
             print("\n # Interrupted!")
             self.clock.stop()
+            for i in range(len(self.led)):
+                self.led[i].off()
+            time.sleep(0.5)
+            print("Score: " + str(self.scores))
             sys.exit()
 
 if __name__=="__main__":
