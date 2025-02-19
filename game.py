@@ -9,9 +9,10 @@ try:
     from tm1637 import TM1637
     from gpiozero import LED, Button
     RASPBERRY_PI = True
-except:
+except Exception as e:
     from dummy import *
     RASPBERRY_PI = False
+    print("Failed to import library: " + str(e))
 
 # Change these constants to modify pins.
 PIN_LED_R = 17
@@ -91,7 +92,7 @@ class Game:
         if not RASPBERRY_PI:
             self.last_input = input("Is it ripe?\n") == "T" # True / False
         else:
-            while not self.user1_green_button.is_pressed or not self.user1_red_button.is_pressed:
+            while (not self.user1_green_button.is_pressed) or (not self.user1_red_button.is_pressed):
                 pass
             self.last_input = self.user1_green_button.is_pressed
             

@@ -9,9 +9,10 @@ try:
     from tm1637 import TM1637
     from gpiozero import LED, Button
     RASPBERRY_PI = True
-except:
+except Exception as e:
     from dummy import *
     RASPBERRY_PI = False
+    print("Failed to import library: " + str(e))
 
 # Change these constants to modify pins.
 PIN_LED_R = 17
