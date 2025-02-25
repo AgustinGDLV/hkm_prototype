@@ -32,8 +32,8 @@ PIN_TIMER_2_DIO = 4
 # Constants for readability
 PLAYER_1 = 0
 PLAYER_2 = 1
-RIPE    = True
-UNRIPE  = False
+RIPE    = 0
+UNRIPE  = 1
 
 COLOR_RIPENESS  = 0 # for color table indices
 COLOR_RGB       = 1
@@ -83,7 +83,7 @@ class Game:
         self.green_button_2 = Button(PIN_BUTTON_P2_G)
 
         self.first_press     = [0, 0] # stores when player first pressed button in nanoseconds
-        self.input_pressed   = [False, False] # stores whether player pressed ripe or unripe
+        self.input_pressed   = [None, None] # stores whether player pressed ripe or unripe
         
         def pressed(button):
             pin = button.pin.number
@@ -142,8 +142,10 @@ class Game:
         ripe = color_table[color][COLOR_RIPENESS]
         if answer == RIPE:
             return ripe
-        else:
+        elif answer == UNRIPE:
             return not ripe
+        else:
+            return False
     
     def play(self):
         try:
@@ -174,6 +176,7 @@ class Game:
 
                 if self.state == STATE_RESET_INPUTS:
                     self.first_press = [0, 0]
+                    self.input_pressed = [None, None]
                     for i in range(len(self.led)):
                         self.led[i].off()
                     time.sleep(0.5) # Clear LED and wait for half a second.
