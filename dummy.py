@@ -28,3 +28,6 @@ class TM1637:
     def numbers(self, num1, num2, colon):
         if __debug__ and num2 != self.time: print(" # Clock: %d" % num2)
         self.time = num2
+    
+    def write(self, num):
+        pass
