@@ -7,8 +7,9 @@ from clock import Clock
 # These libraries only load on the Pi, so we use dummy declarations
 # to debug off the Pi.
 try:
-    from tm1637 import TM1637
-    from gpiozero import LED, Button
+    # from tm1637 import TM1637
+    from gpiozero import Button
+    from dummy import LED, TM1637
     RASPBERRY_PI = True
 except Exception as e:
     from dummy import *
@@ -18,15 +19,15 @@ except Exception as e:
 # Change these constants to modify pins.
 PIN_LED_R = 16
 PIN_LED_G = 25
-PIN_LED_B = 24
+PIN_LED_B = 15
 
-PIN_BUTTON_P1_R = 15
-PIN_BUTTON_P1_G = 23
-PIN_BUTTON_P2_R = 14
-PIN_BUTTON_P2_G = 26
+PIN_BUTTON_P1_R = 18
+PIN_BUTTON_P1_G = 24
+PIN_BUTTON_P2_R = 17
+PIN_BUTTON_P2_G = 22
 
-PIN_TIMER_1_CLK = 17
-PIN_TIMER_1_DIO = 18
+PIN_TIMER_1_CLK = 14
+PIN_TIMER_1_DIO = 26
 PIN_TIMER_2_CLK = 5
 PIN_TIMER_2_DIO = 4
 
@@ -83,15 +84,16 @@ class Game:
         self.red_button_2   = Button(PIN_BUTTON_P2_R)
         self.green_button_2 = Button(PIN_BUTTON_P2_G)
 
-        self.first_press     = [float(math.inf), float(math.inf)] # stores when player first pressed button in nanoseconds
+        self.first_press     = [0, 0]                             # stores when player first pressed button in nanoseconds
         self.input_pressed   = [None, None]                       # stores whether player pressed ripe or unripe      
         self.held            = [False, False]                     # tracks whether player is holding button
 
         def pressed(button):
             pin = button.pin.number
-            if self.first_press[button_to_player[pin]] == float(math.inf) and not self.held[button_to_player[pin]]:
+            if self.first_press[button_to_player[pin]] == 0 and self.held[button_to_player[pin]] == False:
                 self.first_press[button_to_player[pin]] = float(time.time())
                 self.input_pressed[button_to_player[pin]] = button_to_color[pin]
+                self.held[button_to_player[pin]] = True
         
         def released(button):
             self.held[button_to_player[button.pin.number]] = False
