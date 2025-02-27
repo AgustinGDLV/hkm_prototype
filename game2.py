@@ -1,4 +1,5 @@
 import random
+import math
 import time
 import sys
 from clock import Clock
@@ -82,19 +83,28 @@ class Game:
         self.red_button_2   = Button(PIN_BUTTON_P2_R)
         self.green_button_2 = Button(PIN_BUTTON_P2_G)
 
-        self.first_press     = [0, 0] # stores when player first pressed button in nanoseconds
-        self.input_pressed   = [None, None] # stores whether player pressed ripe or unripe
-        
+        self.first_press     = [float(math.inf), float(math.inf)] # stores when player first pressed button in nanoseconds
+        self.input_pressed   = [None, None]                       # stores whether player pressed ripe or unripe      
+        self.held            = [False, False]                     # tracks whether player is holding button
+
         def pressed(button):
             pin = button.pin.number
-            if self.first_press[button_to_player[pin]] == 0:
+            if self.first_press[button_to_player[pin]] == float(math.inf) and not self.held[button_to_player[pin]]:
                 self.first_press[button_to_player[pin]] = float(time.time())
                 self.input_pressed[button_to_player[pin]] = button_to_color[pin]
+        
+        def released(button):
+            self.held[button_to_player[button.pin.number]] = False
 
         self.red_button_1.when_pressed = pressed
         self.green_button_1.when_pressed = pressed
         self.red_button_2.when_pressed = pressed
         self.green_button_2.when_pressed = pressed
+
+        self.red_button_1.when_released = released
+        self.green_button_1.when_released = released
+        self.red_button_2.when_released = released
+        self.green_button_2.when_released = released
 
         # Clock assignment
         self.tm1 = TM1637(clk=PIN_TIMER_1_CLK, dio=PIN_TIMER_1_DIO)
