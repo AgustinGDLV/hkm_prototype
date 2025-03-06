@@ -7,7 +7,7 @@ from clock import Clock
 # to debug off the Pi.
 try:
     from tm1637 import TM1637
-    from gpiozero import LED, Button
+    from gpiozero import PWMLED, Button
     RASPBERRY_PI = True
 except Exception as e:
     from dummy import *
@@ -46,12 +46,12 @@ STATE_END               = 4
 
 # Look-up tables
 color_table = { # colors: ripeness, (R,G,B)
-    "blue":              (UNRIPE, (0,0,1)),
-    "green":             (UNRIPE, (0,1,0)),
-    "candy apple red":   (RIPE,   (1,0,0)),
-    "phoenician yellow": (RIPE,   (1,1,0)),
-    "fuschia":           (RIPE,   (1,0,1)),
-    "maroon":            (UNRIPE, (1,1,1)), # TODO: LED probably can't display this well
+    "blue":              (UNRIPE, (0,   0,   255)),
+    "green":             (UNRIPE, (0,   255, 0)),
+    "candy apple red":   (RIPE,   (255, 0,   1)),
+    "phoenician yellow": (RIPE,   (255, 255, 0)),
+    "fuschia":           (RIPE,   (255, 0,   15)),
+    "maroon":            (UNRIPE, (128, 0,   1)), # TODO: LED probably can't display this well
 }
 
 button_to_player = {
@@ -71,9 +71,9 @@ button_to_color = {
 class Game:
     def __init__(self, duration=30):
         # LED assignment
-        self.r = LED(PIN_LED_R)
-        self.g = LED(PIN_LED_G)
-        self.b = LED(PIN_LED_B)
+        self.r = PWMLED(PIN_LED_R)
+        self.g = PWMLED(PIN_LED_G)
+        self.b = PWMLED(PIN_LED_B)
         self.led = (self.r, self.g, self.b)
 
         # Button assignment
@@ -121,10 +121,7 @@ class Game:
 
         # Update LEDs.
         for i in range(len(self.led)):
-            if color_table[self.current_color][COLOR_RGB][i] == 1:
-                self.led[i].on()
-            else:
-                self.led[i].off()
+            self.led[i].value = color_table[self.current_color][COLOR_RGB][i]
 
     def check_for_press(self):
         if self.first_press[PLAYER_1] == 0 and self.first_press[PLAYER_2] == 0:

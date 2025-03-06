@@ -1,9 +1,10 @@
 # This file contains debug declarations for running the
 # game while not using the Pi.
 
-class LED:
+class PWMLED:
     def __init__(self, pin):
         self.pin = pin
+        self.value = 0
     
     def on(self):
         if __debug__: print(" # LED pin %d on!" % self.pin)
