@@ -25,10 +25,17 @@ PIN_BUTTON_P1_G = 24
 PIN_BUTTON_P2_R = 17
 PIN_BUTTON_P2_G = 22
 
+# clock timers
 PIN_TIMER_1_CLK = 14
 PIN_TIMER_1_DIO = 26
 PIN_TIMER_2_CLK = 5
 PIN_TIMER_2_DIO = 4
+
+# score timers
+PIN_TIMER_3_CLK = 20
+PIN_TIMER_3_DIO = 21
+PIN_TIMER_4_CLK = 13
+PIN_TIMER_4_DIO = 6
 
 # Constants for readability
 PLAYER_1 = 0
@@ -109,7 +116,12 @@ class Game:
 
         # Clock assignment
         self.tm1 = TM1637(clk=PIN_TIMER_1_CLK, dio=PIN_TIMER_1_DIO)
-        self.clock = Clock(duration, self.tm1)
+        self.tm2 = TM1637(clk=PIN_TIMER_2_CLK, dio=PIN_TIMER_2_DIO)
+        self.clock = Clock(duration, self.tm1, self.tm2)
+
+        # Score tracker assignment
+        self.score_1 = TM1637(clk=PIN_TIMER_3_CLK, dio=PIN_TIMER_3_DIO)
+        self.score_2 = TM1637(clk=PIN_TIMER_4_CLK, dio=PIN_TIMER_4_DIO)
 
         # Misc. variables
         self.state = STATE_START
@@ -180,6 +192,8 @@ class Game:
                         self.scores[first_player] += 1
                     elif self.check_input(self.input_pressed[first_player ^ 1], self.current_color) and self.first_press[first_player ^ 1] > 0:
                         self.scores[first_player ^ 1] += 1
+                    self.score_1.number(self.scores[PLAYER_1]) # Write to timers
+                    self.score_2.number(self.scores[PLAYER_2])
                     self.state = STATE_RESET_INPUTS
 
                 if self.state == STATE_RESET_INPUTS:
