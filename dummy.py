@@ -25,10 +25,13 @@ class TM1637:
         self.clk = clk
         self.dio = dio
         self.time = 0
-    
+
     def numbers(self, num1, num2, colon):
         if __debug__ and num2 != self.time: print(" # Clock: %d" % num2)
         self.time = num2
+
+    def number(self, num1):
+        pass
     
     def write(self, num):
         pass
