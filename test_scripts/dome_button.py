@@ -1,12 +1,12 @@
 from gpiozero import Button, LED
 
 def pressed(button):
-    print("Button %d% pressed!" % button.pin.number)
+    print("Button %d pressed!" % button.pin.number)
 
-button1 = Button(18)
-button2 = Button(24)
-button3 = Button(25)
-button4 = Button(26)
+button1 = Button(3)
+button2 = Button(4)
+button3 = Button(23)
+button4 = Button(24)
 
 button1.when_pressed = pressed
 button2.when_pressed = pressed

@@ -3,8 +3,8 @@ from gpiozero import LED, Button
 import time
 
 r = LED(17)
-g = LED(27)
-b = LED(22)
+g = LED(22)
+b = LED(27)
 
 r.on()
 time.sleep(1)

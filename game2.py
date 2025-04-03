@@ -16,26 +16,26 @@ except Exception as e:
     print("Failed to import library: " + str(e))
 
 # Change these constants to modify pins.
-PIN_LED_R = 16
-PIN_LED_G = 25
-PIN_LED_B = 15
+PIN_LED_R = 22
+PIN_LED_G = 27
+PIN_LED_B = 17
 
-PIN_BUTTON_P1_R = 18
-PIN_BUTTON_P1_G = 24
-PIN_BUTTON_P2_R = 17
-PIN_BUTTON_P2_G = 22
+PIN_BUTTON_P1_R = 3
+PIN_BUTTON_P1_G = 4
+PIN_BUTTON_P2_R = 23
+PIN_BUTTON_P2_G = 24
 
 # clock timers
-PIN_TIMER_1_CLK = 14
-PIN_TIMER_1_DIO = 26
-PIN_TIMER_2_CLK = 5
-PIN_TIMER_2_DIO = 4
+PIN_TIMER_1_CLK = 6
+PIN_TIMER_1_DIO = 13
+PIN_TIMER_2_CLK = 25
+PIN_TIMER_2_DIO = 8
 
 # score timers
-PIN_TIMER_3_CLK = 20
-PIN_TIMER_3_DIO = 21
-PIN_TIMER_4_CLK = 13
-PIN_TIMER_4_DIO = 6
+PIN_TIMER_3_CLK = 15
+PIN_TIMER_3_DIO = 18
+PIN_TIMER_4_CLK = 19
+PIN_TIMER_4_DIO = 26
 
 # Constants for readability
 PLAYER_1 = 0
@@ -56,9 +56,9 @@ STATE_END               = 4
 color_table = { # colors: ripeness, (R,G,B)
     "blue":              (UNRIPE, (0,   0,   255)),
     "green":             (UNRIPE, (0,   255, 0)),
-    "candy apple red":   (RIPE,   (255, 0,   1)),
-    "phoenician yellow": (RIPE,   (255, 255, 0)),
-    "fuschia":           (RIPE,   (255, 0,   15)),
+    "candy apple red":   (RIPE,   (255, 0,   10)),
+    "phoenician yellow": (RIPE,   (255, 128, 0)),
+    "fuschia":           (RIPE,   (255, 0,   100)),
     "maroon":            (UNRIPE, (128, 0,   1)), # TODO: LED probably can't display this well
 }
 
@@ -144,7 +144,7 @@ class Game:
 
         # Update LEDs.
         for i in range(len(self.led)):
-            self.led[i].value = color_table[self.current_color][COLOR_RGB][i]
+            self.led[i].value = color_table[self.current_color][COLOR_RGB][i]/255
 
     def check_for_press(self):
         if self.first_press[PLAYER_1] == 0 and self.first_press[PLAYER_2] == 0:
@@ -173,6 +173,8 @@ class Game:
                 if self.state == STATE_START:
                     self.do_intro()
                     self.clock.start()
+                    self.score_1.number(0)
+                    self.score_2.number(0)
                     self.display_color()
                     self.state = STATE_WAIT_FOR_INPUT
 
@@ -213,6 +215,8 @@ class Game:
         except KeyboardInterrupt:
             print("\n # Interrupted!")
             self.clock.stop()
+            self.score_1.write([0, 0, 0, 0])
+            self.score_2.write([0, 0, 0, 0])
             for i in range(len(self.led)):
                 self.led[i].off()
             time.sleep(0.5)

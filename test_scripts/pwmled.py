@@ -2,9 +2,9 @@ from gpiozero import PWMLED
 
 color = [255, 255, 255]
 
-r = PWMLED(17)
+r = PWMLED(22)
 g = PWMLED(27)
-b = PWMLED(22)
+b = PWMLED(17)
 
 try:
     while True:

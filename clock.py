@@ -19,9 +19,9 @@ class Clock:
     
     def _count(self):
         while self.time_out - time.time() >= 0 and self.is_active:
-            self.tm1.numbers(int(0), int(self.time_out - time.time()), colon=True)
+            self.tm1.number(int(self.time_out - time.time()))
             if self.tm2 is not None:
-                self.tm2.numbers(int(0), int(self.time_out - time.time()), colon=True)
+                self.tm2.number(int(self.time_out - time.time()))
         self.stop()
 
     def start(self):
