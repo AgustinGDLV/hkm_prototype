@@ -1,7 +1,7 @@
 # This file contains the class for the global game timer.
 import time
 import math
-from threading import Thread
+from multiprocessing import Process
 try:
     from tm1637 import TM1637
 except:
@@ -22,14 +22,13 @@ class Clock:
             self.tm1.number(int(self.time_out - time.time()))
             if self.tm2 is not None:
                 self.tm2.number(int(self.time_out - time.time()))
-        self.stop()
 
     def start(self):
         if self.thread is None:
             print(" # Clock started!")
             self.is_active = True
             self.time_out = time.time() + self.duration
-            self.thread = Thread(target = self._count, args=())
+            self.thread = Process(target = self._count, args=())
             self.thread.start()
         else:
             raise Exception("Clock already started!")

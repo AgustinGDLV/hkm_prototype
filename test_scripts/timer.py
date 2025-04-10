@@ -6,12 +6,12 @@ from datetime import datetime
 from gpiozero import CPUTemperature, LED
 
 # Creating 4-digit 7-segment display object
-tm = tm1637.TM1637(clk=25, dio=8)  # Using GPIO pins 18 and 17
+tm = tm1637.TM1637(clk=15, dio=18)  # Using GPIO pins 18 and 17
 clear = [0, 0, 0, 0]  # Defining values used to clear the display
 
 #tm.write([127, 255, 127, 127])
-tm.number(8888)
-time.sleep(3)
+tm.number(7788)
+time.sleep(1)
 tm.write(clear)
 
 # Displaying a rolling string

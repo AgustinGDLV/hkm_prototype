@@ -26,16 +26,16 @@ PIN_BUTTON_P2_R = 23
 PIN_BUTTON_P2_G = 24
 
 # clock timers
-PIN_TIMER_1_CLK = 6
-PIN_TIMER_1_DIO = 13
+PIN_TIMER_1_CLK = 19
+PIN_TIMER_1_DIO = 26
 PIN_TIMER_2_CLK = 25
 PIN_TIMER_2_DIO = 8
 
 # score timers
-PIN_TIMER_3_CLK = 15
-PIN_TIMER_3_DIO = 18
-PIN_TIMER_4_CLK = 19
-PIN_TIMER_4_DIO = 26
+PIN_TIMER_3_CLK = 6
+PIN_TIMER_3_DIO = 13
+PIN_TIMER_4_CLK = 15
+PIN_TIMER_4_DIO = 18
 
 # Constants for readability
 PLAYER_1 = 0
@@ -50,7 +50,8 @@ STATE_START             = 0 # for play state
 STATE_WAIT_FOR_INPUT    = 1
 STATE_CHECK_INPUT       = 2
 STATE_RESET_INPUTS      = 3
-STATE_END               = 4
+STATE_HANDLE_SCORE      = 4
+STATE_WAIT_TO_START     = 5
 
 # Look-up tables
 color_table = { # colors: ripeness, (R,G,B)
@@ -182,7 +183,7 @@ class Game:
                     if self.check_for_press() == True:
                         self.state = STATE_CHECK_INPUT
                     if self.clock.get_time() <= 0:
-                        self.state = STATE_END
+                        self.state = STATE_HANDLE_SCORE
                         self.clock.stop()
                         print("Time's up!")
                         print("Score: " + str(self.scores))
@@ -207,9 +208,27 @@ class Game:
                     self.display_color()
                     self.state = STATE_WAIT_FOR_INPUT
 
-                if self.state == STATE_END:
-                    pass
-                    # TODO: handle input between games
+                if self.state == STATE_HANDLE_SCORE:
+                    for i in range(len(self.led)):
+                        self.led[i].off()
+                    # if (self.scores[PLAYER_1] > self.scores[PLAYER_2]):
+                    #    self.tm1.show('uuin')
+                    # elif (self.scores[PLAYER_2] < self.scores[PLAYER_1]):
+                    #    self.tm2.show('uuin')
+                    # else:
+                    #    self.tm1.show('tie')
+                    #    self.tm2.show('tie')
+                    time.sleep(1)
+                    self.state = STATE_WAIT_TO_START
+
+                if self.state == STATE_WAIT_TO_START:
+                    if self.red_button_1.is_pressed or self.red_button_2.is_pressed or self.green_button_1.is_pressed or self.green_button_2.is_pressed:
+                        self.scores = [0,0]
+                        self.first_press = [0,0]
+                        self.input_pressed = [None, None]
+                        self.held = [True, True, True, True]
+                        time.sleep(0.5)
+                        self.state = STATE_START
 
         # Exit gracefully if interrupted.
         except KeyboardInterrupt:
@@ -225,4 +244,5 @@ class Game:
 
 if __name__=="__main__":
     game = Game()
+    game.state = STATE_WAIT_TO_START
     game.play()
