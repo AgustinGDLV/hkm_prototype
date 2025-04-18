@@ -154,9 +154,9 @@ class Game:
             return True
 
     def get_fastest_player(self):
-        if self.first_press[PLAYER_1] is None:
+        if self.input_pressed[PLAYER_1] is None:
             return PLAYER_2
-        elif self.first_press[PLAYER_2] is None:
+        elif self.input_pressed[PLAYER_2] is None:
             return PLAYER_1
         elif self.first_press[PLAYER_1] < self.first_press[PLAYER_2]:
             return PLAYER_1
@@ -198,6 +198,8 @@ class Game:
 
                     # Scoring gives the fastest correct player a point and removes
                     # points from any incorrect players.
+                    print(self.input_pressed)
+                    print(self.first_press)
                     if not self.input_pressed[first_player] is None:
                         if self.check_input(self.input_pressed[first_player], self.current_color):
                             self.scores[first_player] += 1
