@@ -213,11 +213,11 @@ class Game:
                     self.state = STATE_RESET_INPUTS
 
                 if self.state == STATE_RESET_INPUTS:
-                    self.first_press = [0, 0]
-                    self.input_pressed = [None, None]
                     for i in range(len(self.led)):
                         self.led[i].off()
                     time.sleep(0.5) # Clear LED and wait for half a second.
+                    self.first_press = [0, 0]
+                    self.input_pressed = [None, None]
                     self.display_color()
                     self.state = STATE_WAIT_FOR_INPUT
 
