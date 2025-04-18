@@ -154,7 +154,11 @@ class Game:
             return True
 
     def get_fastest_player(self):
-        if self.first_press[PLAYER_1] < self.first_press[PLAYER_2]:
+        if self.first_press[PLAYER_1] is None:
+            return PLAYER_2
+        elif self.first_press[PLAYER_2] is None:
+            return PLAYER_1
+        elif self.first_press[PLAYER_1] < self.first_press[PLAYER_2]:
             return PLAYER_1
         else:
             return PLAYER_2
@@ -195,14 +199,14 @@ class Game:
                     # Scoring gives the fastest correct player a point and removes
                     # points from any incorrect players.
                     if not self.input_pressed[first_player] is None:
-                        if self.check_input(self.input_pressed[first_player ^ 1], self.current_color):
+                        if self.check_input(self.input_pressed[first_player], self.current_color):
                             self.scores[first_player] += 1
                         else:
                             if self.check_input(self.input_pressed[first_player ^ 1], self.current_color):
                                 self.scores[first_player ^ 1] += 1
                             else:
-                                self.scores[first_player ^ 1] -= 1
-                            self.scores[first_player] -= 1
+                                if self.scores[first_player ^ 1] > 0: self.scores[first_player ^ 1] -= 1
+                            if self.scores[first_player] > 0: self.scores[first_player] -= 1
 
                     self.score_1.number(self.scores[PLAYER_1]) # Write to timers
                     self.score_2.number(self.scores[PLAYER_2])
@@ -236,7 +240,7 @@ class Game:
                         self.first_press = [0,0]
                         self.input_pressed = [None, None]
                         self.held = [True, True, True, True]
-                        time.sleep(1)
+                        time.sleep(3)
                         self.state = STATE_START
 
         # Exit gracefully if interrupted.
