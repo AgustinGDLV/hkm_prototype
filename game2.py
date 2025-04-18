@@ -165,7 +165,7 @@ class Game:
             return ripe
         elif answer == UNRIPE:
             return not ripe
-        else:
+        else: # None check
             return False
     
     def play(self):
@@ -190,11 +190,20 @@ class Game:
 
                 elif self.state == STATE_CHECK_INPUT:
                     first_player = self.get_fastest_player()
-                    time.sleep(0.1) # give 100ms for other player to press
-                    if self.check_input(self.input_pressed[first_player], self.current_color):
-                        self.scores[first_player] += 1
-                    elif self.check_input(self.input_pressed[first_player ^ 1], self.current_color) and self.first_press[first_player ^ 1] > 0:
-                        self.scores[first_player ^ 1] += 1
+                    time.sleep(0.2) # give 200ms for other player to press
+
+                    # Scoring gives the fastest correct player a point and removes
+                    # points from any incorrect players.
+                    if not self.input_pressed[first_player] is None:
+                        if self.check_input(self.input_pressed[first_player ^ 1], self.current_color):
+                            self.scores[first_player] += 1
+                        else:
+                            if self.check_input(self.input_pressed[first_player ^ 1], self.current_color):
+                                self.scores[first_player ^ 1] += 1
+                            else:
+                                self.scores[first_player ^ 1] -= 1
+                            self.scores[first_player] -= 1
+
                     self.score_1.number(self.scores[PLAYER_1]) # Write to timers
                     self.score_2.number(self.scores[PLAYER_2])
                     self.state = STATE_RESET_INPUTS
@@ -227,7 +236,7 @@ class Game:
                         self.first_press = [0,0]
                         self.input_pressed = [None, None]
                         self.held = [True, True, True, True]
-                        time.sleep(0.5)
+                        time.sleep(1)
                         self.state = STATE_START
 
         # Exit gracefully if interrupted.
