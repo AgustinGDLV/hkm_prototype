@@ -237,10 +237,10 @@ class Game:
                 if self.state == STATE_WAIT_TO_START:
                     if self.red_button_1.is_pressed or self.red_button_2.is_pressed or self.green_button_1.is_pressed or self.green_button_2.is_pressed:
                         self.scores = [0,0]
+                        time.sleep(1)
                         self.first_press = [0,0]
                         self.input_pressed = [None, None]
                         self.held = [True, True, True, True]
-                        time.sleep(3)
                         self.state = STATE_START
 
         # Exit gracefully if interrupted.
